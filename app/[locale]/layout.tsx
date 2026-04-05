@@ -31,6 +31,7 @@ export async function generateMetadata({
 	const t = await getTranslations({ locale, namespace: "meta" });
 	const isEn = locale === "en";
 	const openGraphUrl = isEn ? `${siteUrl}/en` : siteUrl;
+	const ogImagePath = isEn ? "/EN.png" : "/PL.png";
 
 	return {
 		metadataBase: new URL(siteUrl),
@@ -52,13 +53,12 @@ export async function generateMetadata({
 			siteName: siteConfig.name,
 			title: t("title"),
 			description: t("description"),
-			/* English-only art; explicit URL so crawlers resolve even if file metadata merge differs */
 			images: [
 				{
-					url: "/opengraph-image",
+					url: ogImagePath,
 					width: 1200,
 					height: 630,
-					alt: "Canopy — visual sitemap editor: structure, content sections, and SEO in one workspace",
+					alt: t("ogImageAlt"),
 				},
 			],
 		},
@@ -66,7 +66,7 @@ export async function generateMetadata({
 			card: "summary_large_image",
 			title: t("title"),
 			description: t("description"),
-			images: ["/opengraph-image"],
+			images: [ogImagePath],
 		},
 		robots: {
 			index: true,

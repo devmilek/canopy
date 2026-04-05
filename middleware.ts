@@ -5,10 +5,7 @@ export default createMiddleware(routing);
 
 export const config = {
 	matcher: [
-		/*
-		 * Exclude file-like paths (.*\\..*) and Next metadata routes without an extension —
-		 * otherwise next-intl would run on /opengraph-image and break ImageResponse (400).
-		 */
-		"/((?!api|_next|_vercel|opengraph-image|twitter-image|.*\\..*).*)",
+		/* Exclude API, Next internals, and static files (paths containing a dot). */
+		"/((?!api|_next|_vercel|.*\\..*).*)",
 	],
 };

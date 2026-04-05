@@ -3,7 +3,8 @@
 		"title": "Canopy — visual sitemap, content sections, and SEO in one place",
 		"description": "Design your site structure on a diagram, add content blocks and SEO fields. Multiple projects, browser storage, JSON and Markdown export — no account required.",
 		"editorTitle": "Editor",
-		"keywords": "visual sitemap, site map, SEO, information architecture, content planning"
+		"keywords": "visual sitemap, site map, SEO, information architecture, content planning",
+		"ogImageAlt": "Canopy — visual sitemap, content sections, and SEO in your browser"
 	},
 	"notFound": {
 		"code": "404",

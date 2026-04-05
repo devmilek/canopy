@@ -3,7 +3,8 @@
 		"title": "Canopy — wizualna mapa strony, plan sekcji i SEO w jednym miejscu",
 		"description": "Zaprojektuj strukturę witryny na diagramie, dopisz sekcje treści i pola SEO. Wiele projektów, zapis w przeglądarce, eksport JSON i Markdown — bez konta.",
 		"editorTitle": "Edytor",
-		"keywords": "mapa strony, visual sitemap, SEO, architektura informacji, plan treści"
+		"keywords": "mapa strony, visual sitemap, SEO, architektura informacji, plan treści",
+		"ogImageAlt": "Canopy — wizualna mapa strony, sekcje treści i SEO w przeglądarce"
 	},
 	"notFound": {
 		"code": "404",
