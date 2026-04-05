@@ -45,3 +45,17 @@ skills-lock.json
 .gitignore
 .agents/skills/copywriting/SKILL.md
 .agents/skills/copywriting/references/natural-transitions.md
+.agents/skills/shadcn/cli.md
+.gitignore
+.agents/skills/shadcn/mcp.md
+.agents/skills/shadcn/customization.md
+.agents/skills/shadcn/SKILL.md
+.agents/skills/shadcn/agents/openai.yml
+.agents/skills/shadcn/assets/shadcn-small.png
+.agents/skills/shadcn/assets/shadcn.png
+.agents/skills/shadcn/evals/evals.json
+.agents/skills/shadcn/rules/base-vs-radix.md
+.agents/skills/shadcn/rules/composition.md
+.agents/skills/shadcn/rules/forms.md
+.agents/skills/shadcn/rules/icons.md
+.agents/skills/shadcn/rules/styling.md
