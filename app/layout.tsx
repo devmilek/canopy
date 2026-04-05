@@ -1,30 +1,18 @@
-import { Geist, Geist_Mono } from "next/font/google"
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
 
-import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import { cn } from "@/lib/utils";
+import "./globals.css";
+import { siteUrl } from "@/lib/site-config";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'})
-
-const fontMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-})
+/** Ensures absolute URLs for app-level assets (e.g. `/opengraph-image`). */
+export const metadata: Metadata = {
+	metadataBase: new URL(siteUrl),
+};
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode
+	children: ReactNode;
 }>) {
-  return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", geist.variable)}
-    >
-      <body>
-        <ThemeProvider>{children}</ThemeProvider>
-      </body>
-    </html>
-  )
+	return children;
 }
