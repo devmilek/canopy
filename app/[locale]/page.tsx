@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { CanopyLandingPage } from "@/components/canopy-landing-page";
+import { getGithubRepoStars } from "@/lib/github-repo";
 import { siteConfig, siteUrl } from "@/lib/site-config";
 
 export async function generateMetadata({
@@ -25,6 +26,7 @@ export default async function HomePage({
 }) {
 	const { locale } = await params;
 	const t = await getTranslations({ locale, namespace: "meta" });
+	const githubStars = await getGithubRepoStars();
 
 	const jsonLd = {
 		"@context": "https://schema.org",
@@ -48,7 +50,7 @@ export default async function HomePage({
 				type="application/ld+json"
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
 			/>
-			<CanopyLandingPage />
+			<CanopyLandingPage githubStars={githubStars} />
 		</>
 	);
 }

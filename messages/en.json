@@ -17,6 +17,8 @@
 	"landing": {
 		"navFeatures": "Features",
 		"navHow": "How it works",
+		"navGithub": "GitHub",
+		"navGithubAria": "Canopy on GitHub — open repository",
 		"navOpenEditor": "Open editor",
 		"badgePrimary": "Structure + SEO planning",
 		"badgeOffline": "Works offline in your browser",
