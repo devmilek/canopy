@@ -1,135 +1,80 @@
+<div align="center">
+
 # Canopy
 
-**Visual sitemap editor** — plan site structure, content sections, and SEO fields in one place. Runs in the browser with local persistence; no account required.
+**Plan site structure, content blocks, and SEO metadata on one living diagram** — in the browser, offline-friendly, no account.
 
-Next.js
-TypeScript
-License
+[![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=next.js&logoColor=white)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Bun](https://img.shields.io/badge/Bun-compatible-000000?logo=bun&logoColor=white)](https://bun.sh/)
 
----
+<br />
 
-## Why Canopy?
+<a href="https://github.com/devmilek/canopy">
+  <img
+    src="https://github.com/devmilek/canopy/raw/main/public/EN.png"
+    alt="Canopy — visual sitemap with sections and SEO panel"
+    width="920"
+  />
+</a>
 
-- **Diagram-first IA** — Build and rearrange pages as a graph ([React Flow](https://reactflow.dev/)), with optional auto-layout ([Dagre](https://github.com/dagrejs/dagre)).
-- **Sections per page** — Outline blocks and notes for each node; see a compact preview on the canvas.
-- **SEO workspace** — Title, meta description, slug, H1, keyword, and page intent per selected page.
-- **Projects** — Multiple maps stored locally via [Dexie](https://dexie.org/) (IndexedDB).
-- **Export** — Download the map as **JSON** (round-trip) or **Markdown** (briefs, handoff).
-- **Bilingual UI** — **English** and **Polish** ([next-intl](https://next-intl.dev/)); default locale is Polish with unprefixed URLs (`/`, `/app`), English at `/en` and `/en/app`.
+*Open Graph preview · [PNG on `main`](https://github.com/devmilek/canopy/blob/main/public/EN.png?raw=true)*
 
----
+<br />
 
-## Tech stack
+[**Repository**](https://github.com/devmilek/canopy) · [**Issues & ideas**](https://github.com/devmilek/canopy/issues)
 
-
-| Area        | Choice                                       |
-| ----------- | -------------------------------------------- |
-| Framework   | Next.js 16 (App Router), React 19            |
-| Styling     | Tailwind CSS 4, shadcn-style UI (Radix)      |
-| Canvas      | `@xyflow/react`                              |
-| State       | Zustand                                      |
-| Persistence | Dexie (IndexedDB)                            |
-| i18n        | next-intl                                    |
-| Tooling     | TypeScript, ESLint, Prettier, Bun-compatible |
-
+</div>
 
 ---
 
-## Getting started
+## What you get
 
-**Requirements:** Node 20+ or [Bun](https://bun.sh/).
-
-```bash
-# install dependencies
-bun install
-# or: npm install
-
-# development (Turbopack)
-bun run dev
-# or: npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) — landing page. Editor: [http://localhost:3000/app](http://localhost:3000/app) (PL) or [http://localhost:3000/en/app](http://localhost:3000/en/app) (EN).
-
-### Scripts
-
-
-| Command             | Description             |
-| ------------------- | ----------------------- |
-| `bun run dev`       | Dev server + Turbopack  |
-| `bun run build`     | Production build        |
-| `bun run start`     | Start production server |
-| `bun run lint`      | ESLint                  |
-| `bun run typecheck` | `tsc --noEmit`          |
-| `bun run format`    | Prettier (TS/TSX)       |
-
+| Capability | Details |
+|------------|---------|
+| **Visual IA** | Drag nodes, connect parent → child, **auto-layout** (Dagre) so the tree stays readable. Double-click a label to rename. |
+| **Per-page sections** | Add ordered blocks with name + notes; **compact preview** on each card on the canvas. |
+| **SEO tab** | `<title>`, meta description, slug, H1, primary keyword, **page intent** — scoped to the selected node. Optional **sync slug → path segment** on the map. |
+| **Projects** | Several sitemaps in one browser; **rename, duplicate, delete** projects from the toolbar. |
+| **Persistence** | **Dexie / IndexedDB** — data stays on device until you export or clear storage. |
+| **Export** | **JSON** for full round-trip / backup; **Markdown** for briefs, Notion, or handoff to devs & copy. |
+| **Import** | Restore from a previously exported JSON file. |
+| **Search** | `⌘K` / `Ctrl+K` jumps to **page search**; pick a match and the view **fits** that node. |
+| **Duplicate page** | `⌘D` / `Ctrl+D` clones the **selected page** (not its children). |
+| **i18n** | **Polish** (default, URLs `/` and `/app`) and **English** (`/en`, `/en/app`) via [next-intl](https://next-intl.dev/). |
+| **Responsive** | Editor toolbar and **page plan panel** adapt on small screens (bottom sheet + overlay on mobile). |
 
 ---
 
-## Environment
+## Under the hood
 
-
-| Variable               | Purpose                                                                                                     |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_SITE_URL` | Canonical base URL for SEO/sitemap (no trailing slash). Defaults to `http://localhost:3000` in development. |
-
-
----
-
-## Editor shortcuts
-
-
-| Shortcut        | Action                                |
-| --------------- | ------------------------------------- |
-| `⌘K` / `Ctrl+K` | Focus search                          |
-| `⌘D` / `Ctrl+D` | Duplicate selected page (not subtree) |
-| `Del`           | Delete selection                      |
-| `d`             | Toggle theme (via app chrome)         |
-
-
-Double-click a node title to rename. Select a page to open the **sections / SEO** side panel.
-
----
-
-## Project layout (high level)
-
-```
-app/
-  [locale]/           # Localized routes (pl default, en under /en)
-    page.tsx          # Landing
-    app/page.tsx      # Editor
-  layout.tsx          # Root (global CSS only)
-components/           # UI + canvas (e.g. sitemap-canvas, sitemap-node)
-hooks/store.ts        # Zustand store for graph + UI state
-lib/                  # DB helpers, layout, site config
-messages/             # en.json, pl.json (next-intl)
-i18n/                 # routing, request config, navigation helpers
-```
-
----
-
-## shadcn / UI components
-
-Add or update primitives with the shadcn CLI, for example:
-
-```bash
-npx shadcn@latest add button
-```
-
-Imports typically look like:
-
-```tsx
-import { Button } from "@/components/ui/button";
-```
+**Next.js 16** (App Router) · **React 19** · **[@xyflow/react](https://reactflow.dev/)** for the canvas · **Zustand** for graph + UI state · **Tailwind CSS 4** + Radix-style UI · **next-intl** for translations.
 
 ---
 
 ## Privacy
 
-Map data stays in **your browser** (IndexedDB) unless you export a file. There is no built-in cloud sync.
+Your maps live in **IndexedDB in your browser**. Nothing is sent to a Canopy server for storage. Export only shares what **you** download.
+
+---
+
+## Development
+
+```bash
+bun install && bun run dev
+```
+
+Editor: `/app` (PL) · `/en/app` (EN). For correct canonical URLs and Open Graph in production, set `NEXT_PUBLIC_SITE_URL` (HTTPS, no trailing slash).
+
+```bash
+bun run build   # production
+bun run lint    # eslint
+bun run typecheck
+```
 
 ---
 
 ## Name
 
-**Canopy** — product name used in the UI and metadata. Repository package name: `visualsitemaps`.
+**Canopy** is the product name in the UI. The npm package in this repo is `visualsitemaps`.
