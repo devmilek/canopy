@@ -21,6 +21,10 @@ export default function RootLayout({
 				clientId={process.env.NEXT_PUBLIC_DATABUDDY_CLIENT_ID}
 				trackAttributes={true}
 				trackInteractions={true}
+				trackErrors={true}
+				trackWebVitals={true}
+				trackPerformance={true}
+				disabled={process.env.NODE_ENV === "development"}
 			/>
 			{children}
 		</>
