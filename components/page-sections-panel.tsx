@@ -21,6 +21,13 @@ type PanelTab = "sections" | "seo";
 const fieldClass =
 	"border-input bg-background text-foreground placeholder:text-muted-foreground w-full rounded-md border px-2 py-1.5 text-xs outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
+const panelShellClass =
+	"border-border bg-card/95 flex min-h-0 flex-col overflow-hidden rounded-xl border shadow-sm backdrop-blur-sm " +
+	/* desktop: side column, inset like top toolbar */
+	"lg:relative lg:mr-3 lg:mt-3 lg:mb-3 lg:h-[calc(100svh-1.5rem)] lg:w-[min(100%,420px)] lg:max-w-[420px] lg:shrink-0 " +
+	/* mobile: floating bottom sheet */
+	"max-lg:fixed max-lg:top-auto max-lg:right-2 max-lg:bottom-[max(0.5rem,env(safe-area-inset-bottom))] max-lg:left-2 max-lg:z-50 max-lg:max-h-[min(88dvh,640px)] max-lg:h-auto max-lg:min-h-[36dvh] max-lg:w-auto max-lg:rounded-2xl max-lg:pb-[max(0.75rem,env(safe-area-inset-bottom))] max-lg:shadow-2xl";
+
 export default function PageSectionsPanel() {
 	const t = useTranslations("panel");
 	const [tab, setTab] = useState<PanelTab>("sections");
@@ -52,17 +59,23 @@ export default function PageSectionsPanel() {
 	if (!page) {
 		return (
 			<aside
-				className={cn(
-					"border-border bg-card/95 flex h-svh w-[min(100%,420px)] shrink-0 flex-col border-l shadow-sm backdrop-blur-sm",
-				)}
+				className={cn(panelShellClass, "max-lg:max-h-[50dvh] max-lg:min-h-0")}
+				role="complementary"
+				aria-label={t("title")}
 			>
-				<div className="border-border flex items-center gap-2 border-b px-3 py-3">
-					<LayoutList className="text-muted-foreground size-4 shrink-0" />
-					<div className="min-w-0 flex-1">
-						<h2 className="text-foreground text-sm font-semibold tracking-tight">
-							{t("title")}
-						</h2>
-						<p className="text-muted-foreground truncate text-[11px]">{t("subtitlePick")}</p>
+				<div className="border-border flex flex-col gap-2 border-b px-3 py-3 max-lg:pt-2">
+					<div
+						className="bg-muted/70 mx-auto hidden h-1 w-11 shrink-0 rounded-full max-lg:block"
+						aria-hidden
+					/>
+					<div className="flex items-center gap-2">
+						<LayoutList className="text-muted-foreground size-4 shrink-0" />
+						<div className="min-w-0 flex-1">
+							<h2 className="text-foreground text-sm font-semibold tracking-tight">
+								{t("title")}
+							</h2>
+							<p className="text-muted-foreground truncate text-[11px]">{t("subtitlePick")}</p>
+						</div>
 					</div>
 				</div>
 				<div className="text-muted-foreground flex flex-1 items-center justify-center p-4 text-center text-xs leading-relaxed">
@@ -74,31 +87,37 @@ export default function PageSectionsPanel() {
 
 	return (
 		<aside
-			className={cn(
-				"border-border bg-card/95 flex h-svh w-[min(100%,420px)] shrink-0 flex-col border-l shadow-sm backdrop-blur-sm",
-			)}
+			className={cn(panelShellClass, "min-h-0 flex-1 lg:flex-none")}
+			role="complementary"
+			aria-label={t("title")}
 		>
-			<div className="border-border flex items-center gap-2 border-b px-3 py-3">
-				<LayoutList className="text-muted-foreground size-4 shrink-0" />
-				<div className="min-w-0 flex-1">
-					<h2 className="text-foreground text-sm font-semibold tracking-tight">{t("title")}</h2>
-					<p className="text-muted-foreground truncate text-[11px]">{page.data.label}</p>
+			<div className="border-border flex shrink-0 flex-col gap-2 border-b px-3 py-3 max-lg:pt-2">
+				<div
+					className="bg-muted/70 mx-auto hidden h-1 w-11 shrink-0 rounded-full max-lg:block"
+					aria-hidden
+				/>
+				<div className="flex items-center gap-2">
+					<LayoutList className="text-muted-foreground size-4 shrink-0" />
+					<div className="min-w-0 flex-1">
+						<h2 className="text-foreground text-sm font-semibold tracking-tight">{t("title")}</h2>
+						<p className="text-muted-foreground truncate text-[11px]">{page.data.label}</p>
+					</div>
+					{selectedPageId ? (
+						<Button
+							variant="ghost"
+							size="icon-xs"
+							className="shrink-0"
+							title={t("clearSelection")}
+							aria-label={t("clearSelection")}
+							onClick={() => selectNode(null)}
+						>
+							<X className="size-3.5" />
+						</Button>
+					) : null}
 				</div>
-				{selectedPageId ? (
-					<Button
-						variant="ghost"
-						size="icon-xs"
-						className="shrink-0"
-						title={t("clearSelection")}
-						aria-label={t("clearSelection")}
-						onClick={() => selectNode(null)}
-					>
-						<X className="size-3.5" />
-					</Button>
-				) : null}
 			</div>
 
-			<div className="border-border flex border-b p-1.5">
+			<div className="border-border flex shrink-0 border-b p-1.5">
 				<button
 					type="button"
 					onClick={() => setTab("sections")}
@@ -129,7 +148,7 @@ export default function PageSectionsPanel() {
 
 			{tab === "sections" ? (
 				<>
-					<div className="flex flex-1 flex-col gap-3 overflow-y-auto p-3">
+					<div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain p-3">
 						{sections.length === 0 ? (
 							<p className="text-muted-foreground text-xs">{t("noSections")}</p>
 						) : (
@@ -197,7 +216,7 @@ export default function PageSectionsPanel() {
 							))
 						)}
 					</div>
-					<div className="border-border border-t p-3">
+					<div className="border-border shrink-0 border-t p-3">
 						<Button
 							variant="outline"
 							size="sm"
@@ -210,7 +229,7 @@ export default function PageSectionsPanel() {
 					</div>
 				</>
 			) : (
-				<div className="flex flex-1 flex-col gap-3 overflow-y-auto p-3">
+				<div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain p-3">
 					<p className="text-muted-foreground text-[11px] leading-relaxed">{t("seoIntro")}</p>
 
 					<div className="space-y-1">

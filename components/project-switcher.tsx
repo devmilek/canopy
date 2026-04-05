@@ -37,7 +37,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Copy, FolderPlus, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Copy, FolderPlus, Pencil, Settings2, Trash2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { enUS, pl } from "date-fns/locale";
 
@@ -97,21 +97,21 @@ export default function ProjectSwitcher() {
 
 	if (!projectsReady) {
 		return (
-			<div className="border-input bg-muted/50 text-muted-foreground flex h-8 min-w-[160px] items-center rounded-lg border px-2 text-xs">
+			<div className="border-input bg-muted/50 text-muted-foreground flex h-8 max-md:h-9 min-w-[min(160px,42vw)] items-center rounded-lg border px-2 text-xs sm:min-w-[160px]">
 				{t("loading")}
 			</div>
 		);
 	}
 
 	return (
-		<div className="flex min-w-0 items-center gap-1">
+		<div className="flex min-w-0 items-center gap-1 max-md:gap-1.5">
 			<Select
 				value={currentProjectId ?? ""}
 				onValueChange={(id) => {
 					void openProject(id).then(() => bumpView());
 				}}
 			>
-				<SelectTrigger size="sm" className="min-w-[140px] max-w-[200px]">
+				<SelectTrigger className="min-w-[min(100px,28vw)] max-w-[min(160px,46vw)] sm:min-w-[140px] sm:max-w-[200px]">
 					<SelectValue placeholder={t("placeholder")} />
 				</SelectTrigger>
 				<SelectContent position="popper" align="start">
@@ -135,40 +135,41 @@ export default function ProjectSwitcher() {
 
 			<Button
 				variant="outline"
-				size="icon-sm"
+				size="icon"
 				className="shrink-0"
 				title={t("newProject")}
 				onClick={() => setNewOpen(true)}
 			>
-				<FolderPlus className="size-3.5" />
+				<FolderPlus />
 			</Button>
 
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
 					<Button
 						variant="outline"
-						size="icon-sm"
+						size="icon"
 						className="shrink-0"
-						title={t("more")}
+						title={t("projectMenuTitle")}
+						aria-label={t("projectMenuAria")}
 					>
-						<MoreHorizontal className="size-3.5" />
+						<Settings2 />
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end" className="w-48">
 					<DropdownMenuItem onClick={openRename}>
-						<Pencil className="size-3.5" />
+						<Pencil />
 						{t("rename")}
 					</DropdownMenuItem>
 					<DropdownMenuItem
 						onClick={() => {
 							if (currentProjectId) {
-								void duplicateWorkspaceProject(currentProjectId).then(
-									() => bumpView(),
+								void duplicateWorkspaceProject(currentProjectId).then(() =>
+									bumpView(),
 								);
 							}
 						}}
 					>
-						<Copy className="size-3.5" />
+						<Copy />
 						{t("duplicate")}
 					</DropdownMenuItem>
 					<DropdownMenuSeparator />
@@ -176,7 +177,7 @@ export default function ProjectSwitcher() {
 						variant="destructive"
 						onClick={() => setDeleteOpen(true)}
 					>
-						<Trash2 className="size-3.5" />
+						<Trash2 />
 						{t("delete")}
 					</DropdownMenuItem>
 				</DropdownMenuContent>
@@ -230,14 +231,13 @@ export default function ProjectSwitcher() {
 				<AlertDialogContent>
 					<AlertDialogHeader>
 						<AlertDialogTitle>{t("deleteTitle")}</AlertDialogTitle>
-						<AlertDialogDescription>{t("deleteDescription")}</AlertDialogDescription>
+						<AlertDialogDescription>
+							{t("deleteDescription")}
+						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
-						<Button
-							variant="destructive"
-							onClick={() => void confirmDelete()}
-						>
+						<Button variant="destructive" onClick={() => void confirmDelete()}>
 							{t("confirmDelete")}
 						</Button>
 					</AlertDialogFooter>

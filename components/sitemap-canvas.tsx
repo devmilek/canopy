@@ -11,6 +11,8 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -35,13 +37,20 @@ import SitemapNode from "@/components/sitemap-node";
 import {
 	Copy,
 	Download,
+	FileJson,
+	FileText,
 	LayoutGrid,
+	Menu,
 	MousePointerClick,
 	Search,
 	Upload,
 	RotateCcw,
+	X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
+
+const SELECT_HINT_DISMISSED_KEY = "canopy.dismissSelectHint";
 
 const nodeTypes: NodeTypes = {
 	sitemapNode: SitemapNode,
@@ -123,23 +132,24 @@ function ToolbarSearch() {
 	);
 
 	return (
-		<div className="relative max-w-[min(200px,28vw)] min-w-[120px] flex-1 sm:max-w-[200px] sm:min-w-[140px]">
-			<div className="border-input bg-background/90 flex items-center gap-1.5 rounded-lg border px-2 py-1">
-				<Search className="text-muted-foreground size-3.5 shrink-0" />
-				<input
+		<div className="relative hidden max-w-[min(200px,28vw)] min-w-[120px] flex-1 md:block sm:max-w-[200px] sm:min-w-[140px]">
+			<InputGroup>
+				<InputGroupAddon>
+					<Search />
+				</InputGroupAddon>
+				<InputGroupInput
 					id="sitemap-search"
 					type="search"
 					autoComplete="off"
-					placeholder={t("searchPlaceholder")}
-					className="text-foreground placeholder:text-muted-foreground min-w-0 flex-1 bg-transparent text-xs outline-none"
 					value={q}
+					placeholder={t("searchPlaceholder")}
 					onChange={(e) => setQ(e.target.value)}
 					onFocus={() => setOpen(true)}
 					onBlur={() => {
 						window.setTimeout(() => setOpen(false), 180);
 					}}
 				/>
-			</div>
+			</InputGroup>
 			{open && q.trim() && matches.length > 0 ? (
 				<ul className="border-border bg-card text-card-foreground absolute top-full left-0 z-50 mt-1 max-h-48 w-full min-w-[200px] overflow-auto rounded-lg border py-1 shadow-md">
 					{matches.map((n) => (
@@ -174,17 +184,11 @@ function Toolbar() {
 
 	const stats = useMemo(() => {
 		const pages = nodes.length;
-		const sec = nodes.reduce(
-			(a, n) => a + (n.data.sections?.length ?? 0),
-			0,
-		);
+		const sec = nodes.reduce((a, n) => a + (n.data.sections?.length ?? 0), 0);
 		return t("stats", { pages, sections: sec });
 	}, [nodes, t]);
 
-	const selected = useMemo(
-		() => nodes.filter((n) => n.selected),
-		[nodes],
-	);
+	const selected = useMemo(() => nodes.filter((n) => n.selected), [nodes]);
 	const canDuplicate =
 		selected.length === 1 && selected[0] && selected[0].id !== "root";
 
@@ -244,92 +248,172 @@ function Toolbar() {
 	return (
 		<Panel
 			position="top-left"
-			className="bg-card/95 border-border m-2 flex max-w-[calc(100vw-1rem)] flex-wrap items-center gap-1.5 rounded-xl border p-1.5 shadow-sm backdrop-blur-sm sm:m-3 sm:gap-2 sm:p-2 md:max-w-none"
+			className="bg-card/95 border-border !m-0 flex flex-wrap items-center gap-0.5 rounded-xl border p-1 shadow-sm backdrop-blur-sm !top-2 !right-2 !left-2 max-md:flex-nowrap max-md:gap-2 max-md:p-2.5 sm:!top-3 sm:!right-3 sm:!left-3 sm:gap-2 md:p-2 lg:flex-nowrap lg:gap-2"
 		>
-			<div className="border-border mr-0.5 flex min-w-0 items-center gap-2 border-r pr-2 sm:mr-1 sm:pr-3">
-				<Image
-					src="/logo.svg"
-					alt=""
-					width={28}
-					height={28}
-					className="size-7 shrink-0"
-					unoptimized
-				/>
-				<div className="min-w-0 max-md:hidden">
-					<div className="text-foreground text-sm font-semibold tracking-tight">
-						Canopy
-					</div>
-					<div className="text-muted-foreground text-[10px]">
-						{stats} · {t("brandSubtitle")}
+			<div className="flex min-w-0 flex-1 flex-wrap items-center gap-0.5 max-md:gap-2 max-md:flex-nowrap sm:gap-2 lg:flex-nowrap">
+				<div className="border-border mr-0.5 flex min-w-0 shrink-0 items-center gap-2 border-r pr-2 max-md:mr-0 max-md:border-r-0 max-md:pr-0 sm:mr-1 sm:pr-3">
+					<Image
+						src="/logo.svg"
+						alt=""
+						width={28}
+						height={28}
+						className="size-7 shrink-0"
+						unoptimized
+					/>
+					<div className="min-w-0 max-md:hidden">
+						<div className="text-foreground text-sm font-semibold tracking-tight">
+							Canopy
+						</div>
+						<div className="text-muted-foreground text-[10px]">
+							{stats} · {t("brandSubtitle")}
+						</div>
 					</div>
 				</div>
+
+				<div className="min-w-0 max-md:flex-1">
+					<ProjectSwitcher />
+				</div>
+
+				<ToolbarSearch />
+
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<Button
+							variant="outline"
+							size="icon"
+							className={cn(iconBtn, "max-md:hidden")}
+							onClick={handleLayout}
+						>
+							<LayoutGrid className="size-3.5" />
+						</Button>
+					</TooltipTrigger>
+					<TooltipContent side="bottom">{t("layoutTooltip")}</TooltipContent>
+				</Tooltip>
 			</div>
 
-			<ProjectSwitcher />
+			<div className="border-border hidden shrink-0 items-center gap-1 border-l pl-2 lg:ml-1 lg:flex xl:gap-1.5 xl:pl-2.5">
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<span className="inline-flex">
+							<Button
+								variant="outline"
+								size="icon"
+								className={iconBtn}
+								disabled={!canDuplicate}
+								onClick={handleDuplicate}
+							>
+								<Copy className="size-3.5" />
+							</Button>
+						</span>
+					</TooltipTrigger>
+					<TooltipContent side="bottom">{t("duplicateTooltip")}</TooltipContent>
+				</Tooltip>
 
-			<ToolbarSearch />
-
-			<Tooltip>
-				<TooltipTrigger asChild>
-					<Button
-						variant="outline"
-						size="icon"
-						className={iconBtn}
-						onClick={handleLayout}
-					>
-						<LayoutGrid className="size-3.5" />
-					</Button>
-				</TooltipTrigger>
-				<TooltipContent side="bottom">{t("layoutTooltip")}</TooltipContent>
-			</Tooltip>
-
-			<Tooltip>
-				<TooltipTrigger asChild>
-					<span className="inline-flex">
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
 						<Button
 							variant="outline"
 							size="icon"
 							className={iconBtn}
+							title={t("exportMenuTooltip")}
+						>
+							<Download className="size-3.5" />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="start" className="min-w-[9rem]">
+						<DropdownMenuItem onClick={handleExportJson}>
+							{t("exportJson")}
+						</DropdownMenuItem>
+						<DropdownMenuItem onClick={handleExportMd}>
+							{t("exportMarkdown")}
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
+
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<Button
+							variant="outline"
+							size="icon"
+							className={iconBtn}
+							onClick={() => fileRef.current?.click()}
+						>
+							<Upload className="size-3.5" />
+						</Button>
+					</TooltipTrigger>
+					<TooltipContent side="bottom">{t("importTooltip")}</TooltipContent>
+				</Tooltip>
+
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<Button
+							variant="ghost"
+							size="icon"
+							className="size-8 shrink-0"
+							onClick={reset}
+						>
+							<RotateCcw className="size-3.5" />
+						</Button>
+					</TooltipTrigger>
+					<TooltipContent side="bottom">{t("resetTooltip")}</TooltipContent>
+				</Tooltip>
+			</div>
+
+			<div className="shrink-0 lg:hidden">
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button
+							variant="outline"
+							size="icon"
+							className={iconBtn}
+							aria-label={t("moreActionsAria")}
+							title={t("moreActions")}
+						>
+							<Menu className="size-3.5" />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="end" className="min-w-[11.5rem]">
+						<DropdownMenuItem className="md:hidden" onClick={handleLayout}>
+							<LayoutGrid className="size-3.5" />
+							{t("layout")}
+						</DropdownMenuItem>
+						<DropdownMenuSeparator className="md:hidden" />
+						<DropdownMenuItem
 							disabled={!canDuplicate}
 							onClick={handleDuplicate}
 						>
 							<Copy className="size-3.5" />
-						</Button>
-					</span>
-				</TooltipTrigger>
-				<TooltipContent side="bottom">{t("duplicateTooltip")}</TooltipContent>
-			</Tooltip>
-
-			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
-					<Button
-						variant="outline"
-						size="icon"
-						className={iconBtn}
-						title={t("exportMenuTooltip")}
-					>
-						<Download className="size-3.5" />
-					</Button>
-				</DropdownMenuTrigger>
-				<DropdownMenuContent align="start" className="min-w-[9rem]">
-					<DropdownMenuItem onClick={handleExportJson}>{t("exportJson")}</DropdownMenuItem>
-					<DropdownMenuItem onClick={handleExportMd}>{t("exportMarkdown")}</DropdownMenuItem>
-				</DropdownMenuContent>
-			</DropdownMenu>
-
-			<Tooltip>
-				<TooltipTrigger asChild>
-					<Button
-						variant="outline"
-						size="icon"
-						className={iconBtn}
-						onClick={() => fileRef.current?.click()}
-					>
-						<Upload className="size-3.5" />
-					</Button>
-				</TooltipTrigger>
-				<TooltipContent side="bottom">{t("importTooltip")}</TooltipContent>
-			</Tooltip>
+							{t("duplicate")}
+						</DropdownMenuItem>
+						<DropdownMenuSeparator />
+						<DropdownMenuLabel className="text-muted-foreground text-xs font-normal">
+							{t("exportMenuTooltip")}
+						</DropdownMenuLabel>
+						<DropdownMenuItem onClick={handleExportJson}>
+							<FileJson className="size-3.5" />
+							{t("exportJson")}
+						</DropdownMenuItem>
+						<DropdownMenuItem onClick={handleExportMd}>
+							<FileText className="size-3.5" />
+							{t("exportMarkdown")}
+						</DropdownMenuItem>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem
+							onClick={() => {
+								fileRef.current?.click();
+							}}
+						>
+							<Upload className="size-3.5" />
+							{t("import")}
+						</DropdownMenuItem>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem variant="destructive" onClick={reset}>
+							<RotateCcw className="size-3.5" />
+							{t("reset")}
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
+			</div>
 
 			<input
 				ref={fileRef}
@@ -338,34 +422,64 @@ function Toolbar() {
 				className="hidden"
 				onChange={onFile}
 			/>
-
-			<Tooltip>
-				<TooltipTrigger asChild>
-					<Button variant="ghost" size="icon" className="size-8 shrink-0" onClick={reset}>
-						<RotateCcw className="size-3.5" />
-					</Button>
-				</TooltipTrigger>
-				<TooltipContent side="bottom">{t("resetTooltip")}</TooltipContent>
-			</Tooltip>
 		</Panel>
 	);
 }
 
 function SelectPageHint() {
 	const t = useTranslations("editor");
+	const [hydrated, setHydrated] = useState(false);
+	const [dismissed, setDismissed] = useState(false);
+
+	useEffect(() => {
+		try {
+			setDismissed(localStorage.getItem(SELECT_HINT_DISMISSED_KEY) === "1");
+		} catch {
+			/* private mode */
+		}
+		setHydrated(true);
+	}, []);
+
+	const dismiss = useCallback(() => {
+		try {
+			localStorage.setItem(SELECT_HINT_DISMISSED_KEY, "1");
+		} catch {
+			/* ignore */
+		}
+		setDismissed(true);
+	}, []);
+
+	if (!hydrated || dismissed) return null;
+
 	return (
 		<Panel
 			position="top-right"
-			className="border-border bg-card/95 text-card-foreground m-2 max-w-[min(280px,calc(100vw-5rem))] rounded-xl border p-3 shadow-sm backdrop-blur-sm sm:m-3"
+			className="border-border bg-card/95 text-card-foreground !m-0 max-w-[min(320px,calc(100vw-1.25rem))] rounded-xl border p-3 shadow-sm backdrop-blur-sm !right-2 !top-2 sm:!right-3 sm:!top-3 max-lg:!top-[6.5rem] lg:!top-3 lg:max-w-[min(300px,calc(100vw-2rem))]"
 		>
 			<div className="flex gap-2">
-				<MousePointerClick className="text-primary mt-0.5 size-4 shrink-0" aria-hidden />
-				<div>
-					<p className="text-sm font-semibold leading-tight">{t("selectHintTitle")}</p>
+				<MousePointerClick
+					className="text-primary mt-0.5 size-4 shrink-0"
+					aria-hidden
+				/>
+				<div className="min-w-0 flex-1">
+					<p className="text-sm font-semibold leading-tight">
+						{t("selectHintTitle")}
+					</p>
 					<p className="text-muted-foreground mt-1 text-xs leading-relaxed">
 						{t("selectHintBody")}
 					</p>
 				</div>
+				<Button
+					type="button"
+					variant="ghost"
+					size="icon"
+					className="text-muted-foreground hover:text-foreground size-8 shrink-0"
+					aria-label={t("selectHintDismiss")}
+					title={t("selectHintDismiss")}
+					onClick={dismiss}
+				>
+					<X className="size-4" />
+				</Button>
 			</div>
 		</Panel>
 	);
@@ -382,16 +496,17 @@ function Flow() {
 	const selectedPageId = useStore((s) => s.selectedPageId);
 	const { fitView } = useReactFlow();
 
-	const onSelectionChange = useCallback<
-		OnSelectionChangeFunc<SitemapFlowNode>
-	>(({ nodes: selectedNodes }) => {
-		if (selectedNodes.length !== 1) {
-			setSelectedPageId(null);
-			return;
-		}
-		const only = selectedNodes[0];
-		setSelectedPageId(only ? only.id : null);
-	}, [setSelectedPageId]);
+	const onSelectionChange = useCallback<OnSelectionChangeFunc<SitemapFlowNode>>(
+		({ nodes: selectedNodes }) => {
+			if (selectedNodes.length !== 1) {
+				setSelectedPageId(null);
+				return;
+			}
+			const only = selectedNodes[0];
+			setSelectedPageId(only ? only.id : null);
+		},
+		[setSelectedPageId],
+	);
 
 	return (
 		<ReactFlow
@@ -408,9 +523,7 @@ function Flow() {
 			maxZoom={1.5}
 			proOptions={{ hideAttribution: true }}
 			onInit={() => {
-				requestAnimationFrame(() =>
-					fitView({ padding: 0.2, duration: 0 }),
-				);
+				requestAnimationFrame(() => fitView({ padding: 0.2, duration: 0 }));
 			}}
 		>
 			<FlowKeyboardShortcuts />
@@ -424,17 +537,18 @@ function Flow() {
 				showInteractive={false}
 			/>
 			<MiniMap
-				className="border-border! rounded-lg! border! bg-card/90!"
-				maskColor="var(--background)"
-				nodeClassName={cn(
-					"rounded! border! border-primary/30! bg-primary/20!",
+				className={cn(
+					"border-border! rounded-lg! border! bg-card/90!",
+					"hidden md:block",
 				)}
+				maskColor="var(--background)"
+				nodeClassName={cn("rounded! border! border-primary/30! bg-primary/20!")}
 			/>
 			<Toolbar />
 			{!selectedPageId ? <SelectPageHint /> : null}
 			<Panel
 				position="bottom-center"
-				className="text-muted-foreground mb-3 max-w-[min(720px,94vw)] text-center text-[10px] leading-snug sm:mb-4 sm:text-[11px]"
+				className="text-muted-foreground mb-3 hidden max-w-[min(720px,94vw)] text-center text-[10px] leading-snug sm:mb-4 sm:text-[11px] md:block"
 			>
 				{t("hints")}{" "}
 				<kbd className="bg-muted rounded px-1 py-0.5 font-mono">Del</kbd> —{" "}
@@ -451,12 +565,22 @@ function Flow() {
 }
 
 export default function SitemapCanvas() {
+	const tPanel = useTranslations("panel");
 	const selectedPageId = useStore((s) => s.selectedPageId);
+	const selectNode = useStore((s) => s.selectNode);
 
 	return (
 		<TooltipProvider delayDuration={300}>
-			<div className="flex h-svh w-full min-w-0">
-				<div className="relative min-h-0 min-w-0 flex-1">
+			<div className="relative flex h-svh w-full min-w-0">
+				{selectedPageId ? (
+					<button
+						type="button"
+						className="bg-background/50 fixed inset-0 z-40 backdrop-blur-[1px] lg:hidden"
+						aria-label={tPanel("closeOverlay")}
+						onClick={() => selectNode(null)}
+					/>
+				) : null}
+				<div className="relative z-0 min-h-0 min-w-0 flex-1">
 					<ReactFlowProvider>
 						<ProjectPersistenceBridge />
 						<Flow />
