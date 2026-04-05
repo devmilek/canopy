@@ -34,3 +34,14 @@ pnpm-debug.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+skills-lock.json
+.gitignore
+.agents/skills/copywriting/evals/evals.json
+.gitignore
+.agents/skills/copywriting/references/copy-frameworks.md
+.gitignore
+.agents/skills/frontend-design/LICENSE.txt
+.agents/skills/frontend-design/SKILL.md
+.gitignore
+.agents/skills/copywriting/SKILL.md
+.agents/skills/copywriting/references/natural-transitions.md
